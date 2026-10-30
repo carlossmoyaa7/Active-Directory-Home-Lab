@@ -1,316 +1,487 @@
-\# Active Directory Home Lab
+<div align="center">
 
+#  Active Directory Home Lab
+### Windows Server 2025 | Windows 11 | Group Policy | Network Security
 
+**Building and securing a simulated enterprise Windows environment**
 
-\## Project Overview
+![Windows Server](https://img.shields.io/badge/Windows_Server-2025-0078D4?style=for-the-badge&logo=windows&logoColor=white)
+![Windows 11](https://img.shields.io/badge/Windows-11-0078D4?style=for-the-badge&logo=windows11&logoColor=white)
+![Active Directory](https://img.shields.io/badge/Active_Directory-AD_DS-2563EB?style=for-the-badge)
+![VirtualBox](https://img.shields.io/badge/VirtualBox-Virtualization-183A61?style=for-the-badge)
+![Security](https://img.shields.io/badge/Security-RBAC-16A34A?style=for-the-badge)
 
+</div>
 
+---
 
-This project demonstrates the deployment and administration of a simulated corporate IT environment using Windows Server 2025, Windows 11, Active Directory Domain Services (AD DS), Group Policy, and NTFS file permissions.
+##  Project Overview
 
+This project demonstrates the deployment, configuration, and administration of a **Windows Server 2025 Active Directory environment** using Oracle VirtualBox.
 
+The lab simulates a fictional company called **TechNova**, consisting of four departments: IT, Human Resources, Finance, and Sales.
 
-The lab simulates an organization named \*\*TechNova\*\*, with four departments: IT, Human Resources, Finance, and Sales.
+The goal was to build a functional corporate network, centralize user management, enforce workstation security policies, and implement departmental access restrictions.
 
+###  Project Objectives
 
+- Deploy Windows Server 2025 as a domain controller.
+- Configure Active Directory Domain Services and DNS.
+- Create and manage organizational units, users, and security groups.
+- Join a Windows 11 workstation to the domain.
+- Configure and verify Group Policy Objects.
+- Implement departmental file sharing.
+- Apply NTFS permissions using security groups.
+- Test authorized and unauthorized file access.
+- Document configurations and troubleshooting results.
 
-The objective was to configure a functioning Windows domain, manage employee accounts, implement workstation security policies, and secure departmental file shares using role-based access control.
+---
 
+##  Technologies & Tools
 
+| Technology | Purpose |
+|:---|:---|
+| Windows Server 2025 | Domain controller and file server |
+| Windows 11 | Domain-joined client workstation |
+| Oracle VirtualBox | Virtualization environment |
+| Active Directory Domain Services | Centralized identity management |
+| DNS | Domain name resolution |
+| Group Policy Management | Centralized workstation configuration |
+| NTFS Permissions | File and folder access control |
+| SMB File Sharing | Departmental network shares |
+| Command Prompt | Network and security verification |
 
-\## Technologies Used
+---
 
+##  Lab Architecture
 
+```text
+                    TECHNOVA CORPORATE LAB
+                   Domain: corp.technova.test
+                              |
+              +---------------+---------------+
+              |                               |
+     WINDOWS SERVER 2025                WINDOWS 11
+       Domain Controller                 Workstation
+              |                               |
+      192.168.56.10                    192.168.56.20
+              |                               |
+              +------------+------------------+
+                           |
+                  VirtualBox Host-Only
+                        Network
+                           |
+                  Active Directory
+                           |
+                        TechNova
+                           |
+           +---------------+---------------+
+           |               |               |
+          IT              HR            Finance
+           |               |               |
+        IT-Staff        HR-Staff      Finance-Staff
+                           |
+                         Sales
+                           |
+                       Sales-Staff
+```
 
-\- Windows Server 2025
-
-\- Windows 11
-
-\- Oracle VirtualBox
-
-\- Active Directory Domain Services (AD DS)
-
-\- DNS
-
-\- Group Policy Management
-
-\- NTFS Permissions
-
-\- Windows File Sharing
-
-\- Command Prompt
-
-
-
-\## Lab Environment
-
-
+### Network Configuration
 
 | Component | Configuration |
+|:---|:---|
+| Domain | `corp.technova.test` |
+| Domain Controller | `WIN-N9SAKORTAGL` |
+| Domain Controller IP | `192.168.56.10` |
+| Client Workstation | `TN-WIN11-01` |
+| Client IP | `192.168.56.20` |
+| Network Type | VirtualBox Host-Only |
 
-|---|---|
+---
 
-| Domain Controller | Windows Server 2025 |
+#  Implementation
 
-| Client Workstation | Windows 11 |
+## 01 — Windows Server Deployment
 
-| Domain Name | corp.technova.test |
+Installed Windows Server 2025 inside Oracle VirtualBox and configured the server's network interfaces.
 
-| Domain Controller IP | 192.168.56.10 |
+Deployed Active Directory Domain Services and promoted the server to a domain controller for the newly created domain.
 
-| Windows 11 IP | 192.168.56.20 |
+**Key configurations:**
 
-| Virtualization Platform | Oracle VirtualBox |
+- Windows Server 2025 installation
+- Static IP configuration
+- Active Directory Domain Services
+- DNS server configuration
+- Domain controller promotion
 
-| Network | VirtualBox Host-Only Network |
+<details>
+<summary><b> View Server Configuration Screenshots</b></summary>
 
+<br>
 
+Screenshots are available in the [Server Setup](01-Server-Setup/) folder.
 
-\## 1. Windows Server Configuration
+</details>
 
+---
 
+## 02 — Active Directory Administration
 
-Deployed Windows Server 2025 in VirtualBox and configured networking to support communication between the domain controller and Windows 11 workstation.
+Created the **TechNova organizational unit** and organized employee accounts into departmental OUs.
 
+### Organizational Unit Structure
 
+```text
+corp.technova.test
+│
+└── TechNova
+    │
+    ├── IT
+    │   ├── John Smith
+    │   └── IT-Staff
+    │
+    ├── HR
+    │   ├── Sarah Johnson
+    │   └── HR-Staff
+    │
+    ├── Finance
+    │   ├── Michael Brown
+    │   └── Finance-Staff
+    │
+    ├── Sales
+    │   ├── David Wilson
+    │   └── Sales-Staff
+    │
+    └── Workstations
+```
 
-Installed Active Directory Domain Services and promoted the server to a domain controller for the `corp.technova.test` domain.
+### Employee Account Management
 
+| Department | Employee | Username | Security Group |
+|:---|:---|:---|:---|
+| IT | John Smith | `jsmith` | IT-Staff |
+| HR | Sarah Johnson | `sjohnson` | HR-Staff |
+| Finance | Michael Brown | `mbrown` | Finance-Staff |
+| Sales | David Wilson | `dwilson` | Sales-Staff |
 
+### Administrative Tasks Performed
 
-Configured DNS to support domain authentication and name resolution.
+- Created Active Directory user accounts.
+- Organized users into departmental OUs.
+- Created global security groups.
+- Assigned users to security groups.
+- Practiced password resets.
+- Disabled and re-enabled user accounts.
+- Verified group memberships.
 
+<details>
+<summary><b>📸 View Active Directory Screenshots</b></summary>
 
+<br>
 
-\*\*Skills demonstrated:\*\* Windows Server administration, networking, DNS, and domain controller deployment.
+![Active Directory Organizational Units](02-Active-Directory/01-TechNova-OU-Structure.png)
 
+Additional evidence is available in the [Active Directory](02-Active-Directory/) folder.
 
+</details>
 
-\## 2. Active Directory Administration
+---
 
+## 03 — Group Policy Configuration
 
+Configured Group Policy Objects to manage security settings across domain-joined systems.
 
-Created an organizational unit named `TechNova` containing five child OUs:
+### Workstation Security Policy
 
+| Setting | Configuration |
+|:---|:---|
+| GPO Name | Workstation-Security-Policy |
+| Linked OU | Workstations |
+| Policy | Interactive logon: Machine inactivity limit |
+| Timeout | 600 seconds |
+| Equivalent | 10 minutes |
 
+The policy was configured to lock inactive workstations after 10 minutes.
 
-\- IT
+### Group Policy Verification
 
-\- HR
+Executed the following command on the Windows 11 workstation:
 
-\- Finance
+```cmd
+gpresult /r /scope computer
+```
 
-\- Sales
+**Verified applied policies:**
 
-\- Workstations
+```text
+Applied Group Policy Objects
+----------------------------
+Workstation-Security-Policy
+Default Domain Policy
+```
 
+This confirmed that the domain-joined workstation received the configured Group Policy Object.
 
+<details>
+<summary><b> View Group Policy Evidence</b></summary>
 
-Created employee accounts and departmental security groups.
+<br>
 
+![Workstation GPO Link](03-Group-Policy/01-Workstation-GPO-Link.png)
 
+![Workstation Inactivity Policy](03-Group-Policy/02-Workstation-Inactivity-Policy.png)
 
-| Department | Employee | Security Group |
+![Applied Group Policy](03-Group-Policy/03-Workstation-GPO-Applied.png)
 
-|---|---|---|
+</details>
 
-| IT | John Smith | IT-Staff |
+---
 
-| HR | Sarah Johnson | HR-Staff |
+## 04 — Windows 11 Domain Integration
 
-| Finance | Michael Brown | Finance-Staff |
+Configured a Windows 11 virtual machine and joined it to the Active Directory domain.
 
-| Sales | David Wilson | Sales-Staff |
+### Workstation Details
 
+| Setting | Value |
+|:---|:---|
+| Computer Name | TN-WIN11-01 |
+| Domain | corp.technova.test |
+| Operating System | Windows 11 |
+| IP Address | 192.168.56.20 |
 
+### Verification
 
-Practiced account administration, including password resets, enabling and disabling accounts, and managing security group membership.
+Confirmed domain membership through Windows System Properties.
 
+Tested authentication using Active Directory employee accounts.
 
+```cmd
+whoami
+```
 
-\*\*Skills demonstrated:\*\* Active Directory administration, user provisioning, organizational units, and security group management.
+Example result:
 
+```text
+corp\jsmith
+```
 
+<details>
+<summary><b>📸 View Domain Integration</b></summary>
 
-\## 3. Group Policy Management
+<br>
 
+![Windows 11 Domain Membership](04-Domain-Integration/01-Windows11-Domain-Joined.png)
 
+</details>
 
-Created and linked a Group Policy Object named `Workstation-Security-Policy` to the Workstations OU.
+---
 
+## 05 — File Sharing & NTFS Permissions
 
+Created a departmental file-sharing environment on Windows Server.
 
-Configured the \*\*Interactive logon: Machine inactivity limit\*\* policy to 600 seconds (10 minutes).
+### Shared Directory
 
+```text
+C:\TechNova-Shares
+│
+├── IT
+├── HR
+├── Finance
+└── Sales
+```
 
+### Departmental Access Control
 
-Verified that the Windows 11 workstation received the policy using:
+Configured NTFS permissions using Active Directory security groups.
 
-
-
-`gpresult /r /scope computer`
-
-
-
-The results confirmed that `Workstation-Security-Policy` and `Default Domain Policy` were applied.
-
-
-
-\*\*Skills demonstrated:\*\* Group Policy configuration, workstation security, and policy troubleshooting.
-
-
-
-\## 4. Windows 11 Domain Integration
-
-
-
-Joined a Windows 11 virtual machine named `TN-WIN11-01` to the `corp.technova.test` domain.
-
-
-
-Verified domain membership through Windows System Properties and tested domain authentication using employee accounts.
-
-
-
-\*\*Skills demonstrated:\*\* Domain joining, Windows client administration, and domain authentication.
-
-
-
-\## 5. Departmental File Sharing and Permissions
-
-
-
-Created a shared directory on the Windows Server:
-
-
-
-`C:\\TechNova-Shares`
-
-
-
-Organized departmental folders for IT, HR, Finance, and Sales.
-
-
-
-Configured NTFS permissions to grant departmental security groups Modify access while maintaining administrative access.
-
-
-
-| Folder | Authorized Group | Permission |
-
-|---|---|---|
-
+| Department | Authorized Group | Access Level |
+|:---|:---|:---|
 | IT | IT-Staff | Modify |
-
 | HR | HR-Staff | Modify |
-
 | Finance | Finance-Staff | Modify |
-
 | Sales | Sales-Staff | Modify |
 
+Administrative accounts and SYSTEM retain Full Control.
 
+### Parent Folder Security
 
-Restricted the parent shared folder so Domain Users have Read \& execute access rather than Full Control.
+Restricted the parent folder's Domain Users permissions from **Full Control** to **Read & execute**.
 
+This reduced unnecessary access while preserving navigation to departmental folders.
 
+**Security concepts implemented:**
 
-\*\*Skills demonstrated:\*\* File sharing, NTFS permissions, least privilege, and role-based access control (RBAC).
+- Role-Based Access Control (RBAC)
+- Principle of Least Privilege
+- NTFS Permission Management
+- Security Group-Based Authorization
 
+<details>
+<summary><b>📸 View File Sharing and Permissions</b></summary>
 
+<br>
 
-\## 6. Security Testing and Validation
+![Departmental Folders](05-File-Sharing-and-Permissions/01-Departmental-Shared-Folders.png)
 
+![IT NTFS Permissions](05-File-Sharing-and-Permissions/02-IT-NTFS-Permissions.png)
 
+![HR NTFS Permissions](05-File-Sharing-and-Permissions/03-HR-NTFS-Permissions.png)
 
-Tested departmental file access using domain user accounts.
+![Finance NTFS Permissions](05-File-Sharing-and-Permissions/04-Finance-NTFS-Permissions.png)
 
+![Sales NTFS Permissions](05-File-Sharing-and-Permissions/05-Sales-NTFS-Permissions.png)
 
+![Parent Folder Security](05-File-Sharing-and-Permissions/06-Parent-Folder-Security.png)
 
-Verified that John Smith (`CORP\\jsmith`) could create files in the IT shared folder but could not create files in HR, Finance, or Sales.
+</details>
 
+---
 
+## 06 — Security Testing & Validation
 
-| Test | Expected Result | Actual Result |
+Performed access-control testing using domain user accounts.
 
-|---|---|---|
+The objective was to verify that employees could modify files in their authorized department while unauthorized write attempts were denied.
 
-| IT user → IT folder | Allowed | Passed |
+### IT Department Testing
 
-| IT user → HR folder | Denied | Passed |
+**Test Account:** `CORP\jsmith`
 
-| IT user → Finance folder | Denied | Passed |
+| Test | Expected Result | Actual Result | Status |
+|:---|:---|:---|:---:|
+| IT → IT | Allowed | Allowed |  PASS |
+| IT → HR | Denied | Denied |  PASS |
+| IT → Finance | Denied | Denied |  PASS |
+| IT → Sales | Denied | Denied |  PASS |
 
-| IT user → Sales folder | Denied | Passed |
+### Authorized Access Test
 
+```cmd
+echo IT Access Verified > "\\192.168.56.10\TechNova-Shares\IT\IT-Final-Test.txt"
+```
 
+**Result:** File creation completed successfully.
 
-Also tested the Sales account (`CORP\\dwilson`) and confirmed that it could write to its own department folder while unauthorized writes to other departments were denied.
+### Unauthorized Access Test
 
+```cmd
+echo Unauthorized Access Test > "\\192.168.56.10\TechNova-Shares\HR\IT-to-HR-Test.txt"
+```
 
+**Result:**
 
-\*\*Skills demonstrated:\*\* Access control testing, permissions troubleshooting, and security validation.
+```text
+Access is denied.
+```
 
+The same restriction was verified against the Finance and Sales folders.
 
+### Sales Department Testing
 
-\## Project Documentation
+Additional testing was performed using `CORP\dwilson`.
 
+The Sales account successfully created a file in its authorized department and was denied write access to IT, HR, and Finance.
 
+<details>
+<summary><b>📸 View Security Testing Screenshots</b></summary>
 
-Screenshots are organized into six folders:
+<br>
 
+### Authorized IT Access
 
+![Authorized IT Access](06-Security-Testing/01-IT-Authorized-Access.png)
 
-1\. `01-Server-Setup`
+### Unauthorized HR Access
 
-2\. `02-Active-Directory`
+![HR Access Denied](06-Security-Testing/02-IT-to-HR-Access-Denied.png)
 
-3\. `03-Group-Policy`
+### Unauthorized Finance Access
 
-4\. `04-Domain-Integration`
+![Finance Access Denied](06-Security-Testing/03-IT-to-Finance-Access-Denied.png)
 
-5\. `05-File-Sharing-and-Permissions`
+### Unauthorized Sales Access
 
-6\. `06-Security-Testing`
+![Sales Access Denied](06-Security-Testing/04-IT-to-Sales-Access-Denied.png)
 
+</details>
 
+---
 
-These screenshots provide evidence of the configuration and testing performed throughout the lab.
+##  Troubleshooting & Lessons Learned
 
+Throughout the project, I practiced troubleshooting common Windows Server and Active Directory issues.
 
+| Challenge | Resolution |
+|:---|:---|
+| Virtual machines could not communicate | Reviewed VirtualBox network settings and Windows Firewall rules |
+| Domain authentication and group verification | Used `whoami`, `whoami /groups`, and `net user /domain` |
+| Shared folder access issues | Reviewed SMB sharing and NTFS permissions |
+| Excessive parent folder permissions | Reduced Domain Users access to Read & execute |
+| Group Policy verification | Used `gpresult` to confirm applied GPOs |
+| Unauthorized departmental access | Tested write operations using standard domain accounts |
 
-\## Key Skills Developed
+---
 
+##  Skills Demonstrated
 
+| Category | Technical Skills |
+|:---|:---|
+| Systems Administration | Windows Server 2025, Windows 11 |
+| Identity Management | Active Directory, user accounts, security groups |
+| Networking | TCP/IP, DNS, virtual networking |
+| Security | RBAC, least privilege, NTFS permissions |
+| Endpoint Management | Group Policy, domain integration |
+| Troubleshooting | Command Prompt, network diagnostics, permission testing |
+| Documentation | Technical screenshots, validation procedures, GitHub |
 
-\- Windows Server installation and administration
+---
 
-\- Active Directory user and group management
+##  Repository Structure
 
-\- Organizational Unit administration
+```text
+Active-Directory-Home-Lab/
+│
+├── 01-Server-Setup/
+│
+├── 02-Active-Directory/
+│
+├── 03-Group-Policy/
+│
+├── 04-Domain-Integration/
+│
+├── 05-File-Sharing-and-Permissions/
+│
+├── 06-Security-Testing/
+│
+└── README.md
+```
 
-\- Group Policy configuration and verification
+---
 
-\- Windows 11 domain integration
+##  Project Outcome
 
-\- DNS and virtual networking
+Successfully deployed a simulated Windows enterprise environment featuring:
 
-\- NTFS permissions and file sharing
+- A functional Active Directory domain
+- Departmental organizational units and employee accounts
+- Centralized security group management
+- A domain-joined Windows 11 workstation
+- Applied workstation security policies
+- Departmental SMB file shares
+- NTFS-based access restrictions
+- Verified authorized and unauthorized file operations
 
-\- Role-based access control
+This project strengthened my practical understanding of **Windows Server administration, Active Directory, Group Policy, troubleshooting, and enterprise access control**.
 
-\- Security testing and troubleshooting
+---
 
-\- Technical documentation
+<div align="center">
 
+###  Active Directory | Windows Server | IT Administration
 
+*Hands-on IT infrastructure and cybersecurity portfolio project*
 
-\## Conclusion
-
-
-
-This lab provided hands-on experience building and administering a Windows domain environment.
-
-
-
-By configuring Active Directory, Group Policy, domain-joined workstations, and departmental file permissions, I practiced tasks commonly performed by IT Help Desk technicians and junior system administrators.
-
+</div>
